@@ -1,0 +1,10 @@
+[user]
+    name = LAN ZEXI
+    email = 2303456@sit.singaporetech.edu.sg
+[credential]
+    helper = store
+[alias]
+    st = status
+    co = checkout
+    br = branch
+    ci = commit

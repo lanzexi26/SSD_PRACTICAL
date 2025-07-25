@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  # Nginx Web Server
+  nginx:
+    image: nginx:alpine
+    container_name: nginx-webserver
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/html:/usr/share/nginx/html
+      - ./nginx/ssl:/etc/nginx/ssl
+    restart: unless-stopped
+    networks:
+      - webnet
+
+  # Git Development Container
+  git-dev:
+    image: alpine/git:latest
+    container_name: git-workspace
+    environment:
+      # Git configuration
+      - GIT_USER_NAME=${GIT_USER_NAME:-LAN ZEXI}
+      - GIT_USER_EMAIL=${GIT_USER_EMAIL:-2303456@sit.singaporetech.edu.sg}
+      - GITHUB_TOKEN=${GITHUB_TOKEN:-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}
+    volumes:
+      - ./workspace:/workspace
+      - ./git-config/.gitconfig:/root/.gitconfig
+      - ./git-config/.ssh:/root/.ssh
+    working_dir: /workspace
+    command: /bin/sh -c "git config --global user.name \"$GIT_USER_NAME\" && git config --global user.email \"$GIT_USER_EMAIL\" && tail -f /dev/null"
+    restart: unless-stopped
+    networks:
+      - webnet
+
+networks:
+  webnet:
+    driver: bridge
